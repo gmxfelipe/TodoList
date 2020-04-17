@@ -1,24 +1,27 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom'; 
 import Header from './components/layout/Header';
 import Todos from './components/Todos';
 import AddTodo from './components/AddTodo'
+import About from './components/pages/About';
+import uuid, { v4 as uuidv4 } from 'uuid';
 
 import './App.css';
 class App extends Component {
   state = {
     todos: [
       {
-        id: 1,
+        id: uuidv4(),
         title: 'Tirar o lixo',
         completed: false
       },
       {
-        id: 2,
+        id: uuidv4(),
         title: 'Jantar com esposa',
         completed: true
       },
       {
-        id: 3,
+        id: uuidv4(),
         title: 'Encontro com o chefe',
         completed: false
       }
@@ -40,20 +43,37 @@ class App extends Component {
     this.setState({ todos: [...this.state.todos.filter(todo => todo.id !== id  )] });
   }
 
+  // Adicionando um todo na lista
+  addTodo = (title) => { 
+    const newTodo = {
+      id: uuidv4(),
+      title,
+      completed: false
+    } 
+
+    this.setState({ todos: [...this.state.todos, newTodo]});
+  }
 
   render(){
   return (
+    <Router>
     <div className="App">
       <div className="container">
       <Header />
-      <AddTodo />
-      <Todos 
-      todos={this.state.todos} 
-      markComplete={this.markComplete} 
-      delTodo={this.delTodo} 
-      />
+        <Route axact path="/" render={props => (
+        <React.Fragment>
+             <AddTodo addTodo={this.addTodo} />
+             <Todos 
+             todos={this.state.todos} 
+             markComplete={this.markComplete} 
+             delTodo={this.delTodo} 
+             />
+        </React.Fragment>
+        )} />
+         <Route path="/about" component={About} /> 
       </div>
     </div>
+    </Router>
   )
 }
 }
